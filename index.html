@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime & TV Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script>
+        // Redirect to login page if not logged in
+        if (!localStorage.getItem("username")) {
+            alert("Please login first.");
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("welcome").innerText = `Welcome, ${username}!`;
+        }
+    </script>
+    <h2 id="welcome"></h2>
+    <button onclick="logout()">Logout</button>
+    <h1>Anime & TV Tracker</h1>
+    <button id="toggleDarkMode">Toggle Dark Mode</button>
+
+    <h2>Add a New Show</h2>
+    <form id="addShowForm">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="type" placeholder="Type (Anime/TV series)" required>
+        <input type="text" id="genre" placeholder="Genre">
+        <input type="number" id="release_year" placeholder="Release Year">
+        <input type="text" id="status" placeholder="Status (Completed/Watching)">
+        <input type="number" id="rating" placeholder="Rating (1-10)" step="0.1" min="1" max="10">
+        <input type="text" id="image_url" placeholder="Image URL">
+        <textarea id="description" placeholder="Description"></textarea>
+        <button type="submit">Add Show</button>
+    </form>
+    <input type="text" id="searchInput" placeholder="Search by title..." />
+    <div id="statusTabs">
+        <button data-status="All" class="tab active">All</button>
+        <button data-status="Watching" class="tab">Watching</button>
+        <button data-status="Completed" class="tab">Completed</button>
+        <button data-status="Plan to Watch" class="tab">Plan to Watch</button>
+        <button data-status="On Hold" class="tab">On Hold</button>
+        <button data-status="Dropped" class="tab">Dropped</button>
+    </div>
+    <h2>Show List</h2>
+    <div id="show-grid"></div>
+    <p id="no-results" style="display: none; color: red;">No results found</p>
+    <div id="showList"></div>
+
+    <!-- Review Modal -->
+<div id="reviewModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
+        <h2>Reviews</h2>
+        <div id="reviewsContainer"></div>
+        <h3>Add Your Review</h3>
+        <form id="reviewForm">
+            <input type="hidden" id="reviewShowId">
+            <input type="number" id="reviewRating" placeholder="Rating (1-10)" min="1" max="10" step="0.1" required>
+            <textarea id="reviewText" placeholder="Write your review..." required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+</div>
+    <script src="script.js"></script>
+    <script>
+        const username = localStorage.getItem("username");
+        if (username) {
+            document.getElementById("welcome").innerText = `Welcome, ${username}!`;
+        }
+    </script>
+    <script>
+        window.onload = function () {
+            const username = localStorage.getItem("username");
+            if (!username) {
+                window.location.href = "login.html";
+            } else {
+                const welcomeEl = document.getElementById("welcome");
+                if (welcomeEl) {
+                     welcomeEl.innerText = `Welcome, ${username}`;
+                } 
+            }
+        };
+      
+        function logout() {
+          localStorage.removeItem("username");
+          alert("You have been logged out.");
+          window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

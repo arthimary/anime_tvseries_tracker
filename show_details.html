@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Show Details</h1>
+    <div id="details-container"></div><script>
+    function displayDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get("title");
+        const genre = params.get("genre");
+        const type = params.get("type");
+        const release_year = params.get("release_year");
+        const status = params.get("status");
+        const rating = params.get("rating");
+        const description = params.get("description");
+        const image_url = params.get("image_url");
+
+        if (!title) {
+            document.getElementById("details-container").innerHTML = "<p>No details available.</p>";
+            return;
+        }
+
+        document.getElementById("details-container").innerHTML = `
+           <h2>${title}</h2>
+           <img src="${image_url}" alt="${title}" style="max-width: 300px;">
+           <p><strong>Genre:</strong> ${genre}</p>
+           <p><strong>Type:</strong> ${type}</p>
+           <p><strong>Release Year:</strong> ${release_year}</p>
+           <p><strong>Status:</strong> ${status}</p>
+           <p><strong>Rating:</strong> ${rating}</p>
+           <p><strong>Description:</strong> ${description}</p>
+           <a href="index.html">Back to Home</a>
+
+           <h2 style="color: #007bff; margin-top: 30px;">Ratings and Reviews</h2>
+           <div id="reviews-container" style="margin-bottom: 30px;"></div>
+
+           <h3 style="color: #b30000;">Add Your Review</h3>
+           <form id="reviewForm">
+               <input type="number" id="reviewRating" placeholder="Rating (1-10)" min="1" max="10" required><br><br>
+               <textarea id="reviewText" placeholder="Write your review..." required style="width: 80%; height: 80px;"></textarea><br><br>
+               <button type="submit">Submit Review</button>
+           </form>
+        `;
+    }displayDetails();
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const showId = params.get("id");
+    
+        // Load reviews from localStorage
+        const reviews = JSON.parse(localStorage.getItem("reviews")) || {};
+        const showReviews = reviews[showId] || [];
+    
+        const reviewsContainer = document.getElementById("reviews-container");
+        if (showReviews.length === 0) {
+            reviewsContainer.innerHTML = "<p>No reviews yet.</p>";
+        } else {
+        showReviews.forEach((review, index) => {
+            const div = document.createElement("div");
+            div.className = "review-box";
+            div.innerHTML = `
+               <p><strong>Rating:</strong> ${review.rating}/10</p>
+               <p>${review.text}</p>
+               <button onclick="deleteReview(${index})">Delete</button>
+               <hr>
+            `;
+        reviewsContainer.appendChild(div);
+        });
+        }
+    
+        // Handle form submission
+        document.getElementById("reviewForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const rating = document.getElementById("reviewRating").value;
+            const text = document.getElementById("reviewText").value;
+    
+            const newReview = { rating, text };
+            if (!reviews[showId]) reviews[showId] = [];
+            reviews[showId].push(newReview);
+    
+            localStorage.setItem("reviews", JSON.stringify(reviews));
+            location.reload(); // Reload to show the new review
+        });
+    });
+</script>
+
+<script>
+    function deleteReview(index) {
+        const params = new URLSearchParams(window.location.search);
+        const showId = params.get("id");const reviews = JSON.parse(localStorage.getItem("reviews")) || {};
+        if (reviews[showId]) {
+            reviews[showId].splice(index, 1);
+            localStorage.setItem("reviews", JSON.stringify(reviews));
+            location.reload();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // your review loading and form submit code here
+    });
+</script>
+</body>
+</html>
