@@ -1,92 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime & TV Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Register - Anime & TV Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fbeaea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      color: red;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-    <script>
-        // Redirect to login page if not logged in
-        if (!localStorage.getItem("username")) {
-            alert("Please login first.");
-            window.location.href = "login.html";
-        } else {
-            document.getElementById("welcome").innerText = `Welcome, ${username}!`;
-        }
-    </script>
-    <h2 id="welcome"></h2>
-    <button onclick="logout()">Logout</button>
-    <h1>Anime & TV Tracker</h1>
-    <button id="toggleDarkMode">Toggle Dark Mode</button>
 
-    <h2>Add a New Show</h2>
-    <form id="addShowForm">
-        <input type="text" id="title" placeholder="Title" required>
-        <input type="text" id="type" placeholder="Type (Anime/TV series)" required>
-        <input type="text" id="genre" placeholder="Genre">
-        <input type="number" id="release_year" placeholder="Release Year">
-        <input type="text" id="status" placeholder="Status (Completed/Watching)">
-        <input type="number" id="rating" placeholder="Rating (1-10)" step="0.1" min="1" max="10">
-        <input type="text" id="image_url" placeholder="Image URL">
-        <textarea id="description" placeholder="Description"></textarea>
-        <button type="submit">Add Show</button>
-    </form>
-    <input type="text" id="searchInput" placeholder="Search by title..." />
-    <div id="statusTabs">
-        <button data-status="All" class="tab active">All</button>
-        <button data-status="Watching" class="tab">Watching</button>
-        <button data-status="Completed" class="tab">Completed</button>
-        <button data-status="Plan to Watch" class="tab">Plan to Watch</button>
-        <button data-status="On Hold" class="tab">On Hold</button>
-        <button data-status="Dropped" class="tab">Dropped</button>
-    </div>
-    <h2>Show List</h2>
-    <div id="show-grid"></div>
-    <p id="no-results" style="display: none; color: red;">No results found</p>
-    <div id="showList"></div>
+  <div class="container">
+    <h2>Register</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="registerUser()">Register</button>
+    <div class="message" id="message"></div>
+  </div>
 
-    <!-- Review Modal -->
-<div id="reviewModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <span id="closeModal" style="float:right; cursor:pointer;">&times;</span>
-        <h2>Reviews</h2>
-        <div id="reviewsContainer"></div>
-        <h3>Add Your Review</h3>
-        <form id="reviewForm">
-            <input type="hidden" id="reviewShowId">
-            <input type="number" id="reviewRating" placeholder="Rating (1-10)" min="1" max="10" step="0.1" required>
-            <textarea id="reviewText" placeholder="Write your review..." required></textarea>
-            <button type="submit">Submit Review</button>
-        </form>
-    </div>
-</div>
-    <script src="script.js"></script>
-    <script>
-        const username = localStorage.getItem("username");
-        if (username) {
-            document.getElementById("welcome").innerText = `Welcome, ${username}!`;
-        }
-    </script>
-    <script>
-        window.onload = function () {
-            const username = localStorage.getItem("username");
-            if (!username) {
-                window.location.href = "login.html";
-            } else {
-                const welcomeEl = document.getElementById("welcome");
-                if (welcomeEl) {
-                     welcomeEl.innerText = `Welcome, ${username}`;
-                } 
-            }
-        };
-      
-        function logout() {
-          localStorage.removeItem("username");
-          alert("You have been logged out.");
-          window.location.href = "login.html";
-        }
-    </script>
+  <script>
+    function registerUser() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch("http://localhost/anime_tv_tracker/register.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("message").textContent = data.message;
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        document.getElementById("message").textContent = "Something went wrong.";
+      });
+    }
+  </script>
+
 </body>
 </html>
